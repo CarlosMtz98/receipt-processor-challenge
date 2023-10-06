@@ -1,0 +1,32 @@
+name: PR Quaility Checks
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "api/tenant/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "api/tenant/**"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ['1.18', '1.19', '1.20', '1.21.x']
+        id: go
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+      - name: Get dependencies
+        run: |
+          go get -v -t -d ./...
+      - name: Build
+        run: go build .
+      - name: Test
+        run: go test -v .
