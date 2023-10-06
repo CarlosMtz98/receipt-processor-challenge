@@ -3,13 +3,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "api/tenant/**"
   pull_request:
     branches:
       - main
-    paths:
-      - "api/tenant/**"
 
 jobs:
   build:
