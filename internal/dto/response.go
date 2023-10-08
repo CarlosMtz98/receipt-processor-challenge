@@ -5,7 +5,7 @@ type CreateReceiptResponse struct {
 }
 
 type GetPointsResponse struct {
-	Points int64 `json:"points"`
+	Points int `json:"points"`
 }
 
 type ResponseErrorModel struct {
