@@ -76,16 +76,35 @@ func TestReceiptServiceImpl_GetReceiptPoints(t *testing.T) {
 
 	// Create a test receipt
 	receipt := &models.Receipt{
-		ID: uuid.New(),
+		ID:           uuid.New(),
+		Retailer:     "M&M Corner Market",
+		PurchaseDate: "2022-03-20",
+		PurchaseTime: "14:33",
+		Total:        "9.00",
+		Items: []models.ReceiptItem{
+			{
+				ShortDescription: "Gatorade",
+				Price:            "2.25",
+			},
+			{
+				ShortDescription: "Gatorade",
+				Price:            "2.25",
+			},
+			{
+				ShortDescription: "Gatorade",
+				Price:            "2.25",
+			},
+			{
+				ShortDescription: "Gatorade",
+				Price:            "2.25",
+			},
+		},
 	}
 
-	// Define the expected behavior of the mock repository
-	mockReceiptRepo.EXPECT().GetByID(gomock.Any(), receipt.ID).Times(1).Return(receipt, nil)
-
 	// Call the GetReceiptPoints func
-	points, err := receiptService.GetReceiptPoints(context.Background(), receipt.ID)
+	points, err := receiptService.GetReceiptPoints(context.Background(), receipt)
 	// Assert the results
-	assert.Equal(t, 100, points)
+	assert.Equal(t, 109, points)
 	assert.NoError(t, err)
 	assert.NotNil(t, points)
 }
