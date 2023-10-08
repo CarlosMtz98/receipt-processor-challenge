@@ -67,16 +67,16 @@ func (mr *MockReceiptServiceMockRecorder) GetReceiptByID(ctx, receiptID interfac
 }
 
 // GetReceiptPoints mocks base method.
-func (m *MockReceiptService) GetReceiptPoints(ctx context.Context, receiptID uuid.UUID) (int, error) {
+func (m *MockReceiptService) GetReceiptPoints(ctx context.Context, receipt *models.Receipt) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetReceiptPoints", ctx, receiptID)
+	ret := m.ctrl.Call(m, "GetReceiptPoints", ctx, receipt)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetReceiptPoints indicates an expected call of GetReceiptPoints.
-func (mr *MockReceiptServiceMockRecorder) GetReceiptPoints(ctx, receiptID interface{}) *gomock.Call {
+func (mr *MockReceiptServiceMockRecorder) GetReceiptPoints(ctx, receipt interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetReceiptPoints", reflect.TypeOf((*MockReceiptService)(nil).GetReceiptPoints), ctx, receiptID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetReceiptPoints", reflect.TypeOf((*MockReceiptService)(nil).GetReceiptPoints), ctx, receipt)
 }

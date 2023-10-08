@@ -52,6 +52,7 @@ func (h ReceiptHandlerImpl) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, response)
+	return
 }
 
 func (h ReceiptHandlerImpl) GetPoints(c *gin.Context) {
@@ -66,19 +67,29 @@ func (h ReceiptHandlerImpl) GetPoints(c *gin.Context) {
 		return
 	}
 
-	// Convert 'idStr' to a UUID
+	// Convert 'id' to a UUID
 	receiptId, err := uuid.Parse(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
 	}
 
-	points, err := h.receiptSvc.GetReceiptPoints(c, receiptId)
+	receipt, err := h.receiptSvc.GetReceiptByID(c, receiptId)
 	if err != nil {
-		errMsg := fmt.Sprintf("Could not found receipt with id: %s", id)
+		errMsg := fmt.Sprintf("Could not find the receipt with ID %s", receiptId.String())
 		response := dto.ResponseErrorModel{
 			Code:    1404,
 			Message: errMsg,
+		}
+		c.JSON(http.StatusNotFound, response)
+		return
+	}
+
+	points, err := h.receiptSvc.GetReceiptPoints(c, receipt)
+	if err != nil {
+		response := dto.ResponseErrorModel{
+			Code:    1404,
+			Message: err.Error(),
 		}
 		c.JSON(http.StatusNotFound, response)
 		return

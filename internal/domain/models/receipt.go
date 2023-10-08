@@ -1,6 +1,12 @@
 package models
 
-import "github.com/google/uuid"
+import (
+	"errors"
+	"fmt"
+	"github.com/google/uuid"
+	"strconv"
+	"time"
+)
 
 type Receipt struct {
 	ID           uuid.UUID
@@ -14,4 +20,35 @@ type Receipt struct {
 type ReceiptItem struct {
 	ShortDescription string `json:"shortDescription" validate:"required"`
 	Price            string `json:"price" validate:"required,currency"`
+}
+
+func (r *Receipt) GetTotalAsFloat() (float64, error) {
+	return strconv.ParseFloat(r.Total, 64)
+}
+
+func (r *Receipt) GetReceiptDatetime() (time.Time, error) {
+	if r == nil {
+		return time.Time{}, errors.New("receipt is nil")
+	}
+
+	if r.PurchaseDate == "" {
+		return time.Time{}, errors.New("receipt date is nil or empty")
+	}
+
+	if r.PurchaseTime == "" {
+		return time.Time{}, errors.New("receipt time is nil or empty")
+	}
+
+	receiptTimeStr := fmt.Sprintf("%s %s:00", r.PurchaseDate, r.PurchaseTime)
+	date, err := time.Parse(time.DateTime, receiptTimeStr)
+
+	if err != nil {
+		return time.Time{}, fmt.Errorf("failed to parse receipt datetime: %v", err)
+	}
+
+	return date, nil
+}
+
+func (ri *ReceiptItem) GetPriceAsFloat() (float64, error) {
+	return strconv.ParseFloat(ri.Price, 64)
 }

@@ -98,19 +98,24 @@ func TestGetPointsEndpoint(t *testing.T) {
 
 	mockReceiptService := mock.NewMockReceiptService(ctrl)
 	receiptHandler := handler.NewReceiptHandler(mockReceiptService)
-	mockReceipt := buildRandomReceipt()
-
 	r.GET("/receipts/:id/points", receiptHandler.GetPoints)
 
+	mockReceipt := buildRandomReceipt()
 	// Create a new HTTP request for the /receipts/{id}/points endpoint
 	url := fmt.Sprintf("/receipts/%s/points", mockReceipt.ID.String())
 	req, err := http.NewRequest("GET", url, nil)
 	assert.NoError(t, err)
 
 	mockReceiptService.EXPECT().
-		GetReceiptPoints(gomock.Any(), gomock.Any()).
+		GetReceiptByID(gomock.Any(), mockReceipt.ID).
 		Times(1).
-		Return(100, nil)
+		Return(&mockReceipt, nil)
+
+	mockReceiptService.EXPECT().
+		GetReceiptPoints(gomock.Any(), &mockReceipt).
+		Times(1).
+		Return(28, nil)
+
 	// Handle the request
 	r.ServeHTTP(w, req)
 
@@ -123,7 +128,7 @@ func TestGetPointsEndpoint(t *testing.T) {
 	}
 
 	// Assert that the response ID matches the expected ID
-	assert.Equal(t, 100, response.Points)
+	assert.Equal(t, 28, response.Points)
 }
 
 func buildRandomReceipt() models.Receipt {
