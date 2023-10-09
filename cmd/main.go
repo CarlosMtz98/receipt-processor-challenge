@@ -3,23 +3,24 @@ package main
 import (
 	"log"
 	"os"
+	receiptHttp "receipt-processor-challenge/internal/domain/receipt/delivery/http"
 	"receipt-processor-challenge/internal/domain/receipt/repository"
 	"receipt-processor-challenge/internal/domain/receipt/service"
-	"receipt-processor-challenge/internal/server/handler"
-	"receipt-processor-challenge/internal/server/router"
+	"receipt-processor-challenge/internal/server"
 )
 
 func main() {
+	log.Println("Starting Server")
 	receiptRepo := repository.InitReceiptRepository()
 	receiptService := service.NewReceiptService(receiptRepo)
-	receiptHandler := handler.NewReceiptHandler(receiptService)
+	receiptHandler := receiptHttp.NewReceiptHandler(receiptService)
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "7070"
 	}
 
-	r := router.SetupRoutes(receiptHandler)
+	r := server.SetupRoutes(receiptHandler)
 
 	err := r.Run(":" + port)
 	if err != nil {

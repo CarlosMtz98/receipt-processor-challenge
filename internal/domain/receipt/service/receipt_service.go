@@ -16,7 +16,7 @@ var (
 	ErrReceiptWithId = errors.New("the receipt was not found in the repository")
 	// ErrMissingReceiptId is returned when there is no id provided
 	ErrMissingReceiptId = errors.New("the receipt id can't be null")
-	// ErrReceiptIsNil  is returned when there is no receipt passed through the param
+	// ErrReceiptIsNil is returned when there is no receipt passed through the param
 	ErrReceiptIsNil = errors.New("the receipt is null")
 )
 
@@ -97,7 +97,8 @@ func isTotalRoundAmount(receipt *models.Receipt) int {
 	if err != nil {
 		return 0
 	}
-	if receiptTotal-math.Floor(receiptTotal+0.5) > 0 {
+	x := int(receiptTotal)
+	if receiptTotal-float64(x) > 0 {
 		return 0
 	}
 
@@ -168,9 +169,9 @@ func getTimePoints(receipt *models.Receipt) int {
 		return 0
 	}
 
-	receiptPurchaseHour := receiptDate.Hour() + 1
+	hour, minutes, _ := receiptDate.Clock()
 
-	if receiptPurchaseHour > 14 && receiptPurchaseHour < 16 {
+	if hour >= 14 && hour < 16 && minutes > 0 {
 		return TimePoints
 	}
 
