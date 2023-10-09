@@ -21,7 +21,7 @@ func main() {
 	}
 
 	r := server.SetupRoutes(receiptHandler)
-
+	log.Printf("Server listening on port: %s", port)
 	err := r.Run(":" + port)
 	if err != nil {
 		log.Fatalf("Error starting server: %v", err)
