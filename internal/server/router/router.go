@@ -7,7 +7,9 @@ import (
 )
 
 func SetupRoutes(receiptHandler handler.ReceiptHandler) *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
 
 	health := r.Group("/health")
 	receipt := r.Group("/receipts")
