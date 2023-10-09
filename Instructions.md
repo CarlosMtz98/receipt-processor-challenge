@@ -1,14 +1,32 @@
 ## Run webservice instructions
 
-Hello 👋 Thank you for taking the time to test and evaluate my api implementation. 
+Hello 👋 Thank you for taking the time to test and evaluate my API implementation. 
 
-This api service uses Docker which will take care to set up the environment and all dependencies.
+This API service uses Docker, which will set up the environment and all dependencies.
 
 ## Getting Started
 ### Run server
 To run the server locally run the following command
 ```bash
 make local
+```
+
+#### Verify that the application is running
+After the docker image is built it starts running, you should see the following output in the logs
+```
+receipt-processor-api  | [*dateTime*] Starting Server
+receipt-processor-api  | [*dateTime*] Server listening on port: 7070
+```
+
+To verify that the application is available you can make a `health check request` which is available at: `localhost:7070/health`
+```bash
+curl --location 'localhost:7070/health'
+```
+You should see the following response
+```json
+{
+    "status": "OK"
+}
 ```
 
 #### Create new receipt
