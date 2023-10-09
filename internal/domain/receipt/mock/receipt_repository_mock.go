@@ -6,7 +6,7 @@ package mock
 
 import (
 	context "context"
-	models "receipt-processor-challenge/internal/domain/models"
+	models "github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/models"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"

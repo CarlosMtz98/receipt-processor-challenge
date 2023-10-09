@@ -1,13 +1,14 @@
-package handler
+package http
 
 import (
 	"fmt"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/models"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/service"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/dto"
+	"github.com/CarlosMtz98/receipt-processor-challenge/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
-	"receipt-processor-challenge/internal/domain/models"
-	"receipt-processor-challenge/internal/domain/receipt/service"
-	"receipt-processor-challenge/internal/dto"
 )
 
 type ReceiptHandler interface {
@@ -29,21 +30,18 @@ func (h ReceiptHandlerImpl) Create(c *gin.Context) {
 	receipt := &models.Receipt{}
 
 	if err := c.Bind(&receipt); err != nil {
-		response := dto.ResponseErrorModel{
-			Code:    1405,
-			Message: "Could not parse the request body",
-		}
-		c.JSON(http.StatusBadRequest, response)
+		utils.HandleBadRequest(c, "Could not parse the request body", err)
+		return
+	}
+
+	if err := utils.ValidateStruct(c, receipt); err != nil {
+		utils.HandleBadRequest(c, "The receipt params are not valid", err)
 		return
 	}
 
 	createdReceipt, err := h.receiptSvc.CreateReceipt(c, receipt)
 	if err != nil {
-		response := dto.ResponseErrorModel{
-			Code:    1405,
-			Message: "Could not add new receipt",
-		}
-		c.JSON(http.StatusInternalServerError, response)
+		utils.HandleInternalError(c, "Could not add new receipt", err)
 		return
 	}
 
@@ -59,45 +57,31 @@ func (h ReceiptHandlerImpl) GetPoints(c *gin.Context) {
 	id := c.Param("id")
 
 	if id == "" {
-		response := dto.ResponseErrorModel{
-			Code:    1405,
-			Message: "Could not parse the request body",
-		}
-		c.JSON(http.StatusBadRequest, response)
+		utils.HandleBadRequest(c, "Could not parse the request body", nil)
 		return
 	}
 
-	// Convert 'id' to a UUID
 	receiptId, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		utils.HandleBadRequest(c, "Invalid ID format", err)
 		return
 	}
 
 	receipt, err := h.receiptSvc.GetReceiptByID(c, receiptId)
 	if err != nil {
-		errMsg := fmt.Sprintf("Could not find the receipt with ID %s", receiptId.String())
-		response := dto.ResponseErrorModel{
-			Code:    1404,
-			Message: errMsg,
-		}
-		c.JSON(http.StatusNotFound, response)
+		utils.HandleNotFound(c, fmt.Sprintf("Could not find the receipt with ID %s", receiptId))
 		return
 	}
 
 	points, err := h.receiptSvc.GetReceiptPoints(c, receipt)
 	if err != nil {
-		response := dto.ResponseErrorModel{
-			Code:    1404,
-			Message: err.Error(),
-		}
-		c.JSON(http.StatusNotFound, response)
+		utils.HandleInternalError(c, "Error calculating points", err)
 		return
 	}
+
 	response := dto.GetPointsResponse{
 		Points: points,
 	}
-
 	c.JSON(http.StatusOK, response)
 	return
 }

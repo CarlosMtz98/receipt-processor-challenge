@@ -2,79 +2,74 @@ package repository
 
 import (
 	"context"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/models"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"receipt-processor-challenge/internal/domain/models"
+	"sync"
 	"testing"
 )
 
-func TestInMemoryReceiptRepository_Create(t *testing.T) {
-	// Initialize the receipt repository
-	repo := InitReceiptRepository()
+func TestInMemoryReceiptRepository(t *testing.T) {
+	t.Run("Create and GetByID", func(t *testing.T) {
+		repo := InitReceiptRepository().(*InMemoryReceiptRepository)
 
-	// Create a test receipt the other fields are not required for this test
-	receipt := &models.Receipt{
-		ID: uuid.New(),
-	}
-	// Test create
-	err := repo.Create(context.Background(), receipt)
-	assert.NoError(t, err)
+		receipt := &models.Receipt{
+			ID: uuid.New(),
+		}
 
-	// Test Create for an existing receipt
-	err = repo.Create(context.Background(), receipt)
-	assert.Error(t, err) // Expect an error
-	assert.Contains(t, err.Error(), ErrFailedToAddReceipt.Error())
+		err := repo.Create(context.Background(), receipt)
+		assert.NoError(t, err)
+
+		retrievedReceipt, err := repo.GetByID(context.Background(), receipt.ID)
+		assert.NoError(t, err)
+		assert.Equal(t, receipt, retrievedReceipt)
+	})
+
+	t.Run("Create Duplicate", func(t *testing.T) {
+		repo := InitReceiptRepository().(*InMemoryReceiptRepository)
+
+		receipt := &models.Receipt{
+			ID: uuid.New(),
+		}
+
+		err := repo.Create(context.Background(), receipt)
+		assert.NoError(t, err)
+
+		err = repo.Create(context.Background(), receipt)
+		assert.Error(t, err)
+		assert.Equal(t, ErrFailedToAddReceipt, err)
+	})
 }
 
-func TestInMemoryReceiptRepository_Create_ErrFailedToAddReceipt(t *testing.T) {
-	// Initialize the repository
-	repo := InitReceiptRepository()
+func TestInMemoryReceiptRepository_EdgeCases(t *testing.T) {
+	t.Run("Create with In Memory Nil Map", func(t *testing.T) {
+		repo := &InMemoryReceiptRepository{
+			mu:       sync.RWMutex{},
+			receipts: nil,
+		}
 
-	// Attempt to create a receipt with a duplicate ID
-	receipt := &models.Receipt{
-		ID: uuid.New(),
-		// Initialize other fields as needed
-	}
+		receipt := &models.Receipt{
+			ID: uuid.New(),
+		}
 
-	// Create the receipt for the first time
-	err := repo.Create(context.Background(), receipt)
-	assert.NoError(t, err) // Expect no error
+		err := repo.Create(context.Background(), receipt)
+		assert.NoError(t, err)
 
-	// Attempt to create the same receipt again (should return ErrFailedToAddReceipt)
-	err = repo.Create(context.Background(), receipt)
-	assert.Error(t, err)
-	assert.EqualError(t, err, ErrFailedToAddReceipt.Error())
-}
+		retrievedReceipt, err := repo.GetByID(context.Background(), receipt.ID)
+		assert.NoError(t, err)
+		assert.Equal(t, receipt, retrievedReceipt)
+	})
 
-func TestInMemoryReceiptRepository_GetById(t *testing.T) {
-	// Initialize the receipt repository
-	repo := InitReceiptRepository()
+	t.Run("GetByID from Nil Map", func(t *testing.T) {
+		repo := &InMemoryReceiptRepository{
+			mu:       sync.RWMutex{},
+			receipts: nil,
+		}
 
-	// Create a test receipt the other fields are not required for this test
-	receipt := &models.Receipt{
-		ID: uuid.New(),
-	}
-
-	// Test GetByID for an added receipt
-	err := repo.Create(context.Background(), receipt)
-	assert.NoError(t, err) // Expect no error
-
-	retrievedReceipt, err := repo.GetByID(context.Background(), receipt.ID)
-	assert.NoError(t, err) // Expect no error
-	assert.NotNil(t, retrievedReceipt)
-	assert.Equal(t, receipt.ID, retrievedReceipt.ID)
-}
-
-func TestInMemoryReceiptRepository_GetByID_ErrReceiptNotFound(t *testing.T) {
-	// Initialize the repository
-	repo := InitReceiptRepository()
-
-	// Attempt to retrieve a non-existent receipt
-	nonExistentID := uuid.New()
-	retrievedReceipt, err := repo.GetByID(context.Background(), nonExistentID)
-
-	// Expect an error and that the error message matches ErrReceiptNotFound
-	assert.Error(t, err)
-	assert.EqualError(t, err, ErrReceiptNotFound.Error())
-	assert.Nil(t, retrievedReceipt)
+		nonExistentID := uuid.New()
+		retrievedReceipt, err := repo.GetByID(context.Background(), nonExistentID)
+		assert.Error(t, err)
+		assert.Nil(t, retrievedReceipt)
+		assert.Equal(t, ErrReceiptNotFound, err)
+	})
 }
