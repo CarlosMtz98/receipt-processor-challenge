@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  web:
+    container_name: receipt-processor-api
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+    ports:
+      - "7070:7070"
+    environment:
+      - GIN_MODE=release
+      - PORT=7070
+    restart: always
+    volumes:
+      - ./:/app
+    command: go run cmd/main.go
