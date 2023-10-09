@@ -1,9 +1,9 @@
 package server
 
 import (
+	receiptHttp "github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/delivery/http"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	receiptHttp "receipt-processor-challenge/internal/domain/receipt/delivery/http"
 )
 
 func SetupRoutes(receiptHandler receiptHttp.ReceiptHandler) *gin.Engine {

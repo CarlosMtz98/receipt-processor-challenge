@@ -4,15 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/models"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/mock"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/dto"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"receipt-processor-challenge/internal/domain/models"
-	"receipt-processor-challenge/internal/domain/receipt/mock"
-	"receipt-processor-challenge/internal/dto"
 	"testing"
 )
 

@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/models"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/mock"
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"receipt-processor-challenge/internal/domain/models"
-	"receipt-processor-challenge/internal/domain/receipt/mock"
 	"testing"
 )
 

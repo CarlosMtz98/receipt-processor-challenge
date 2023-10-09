@@ -2,13 +2,13 @@ package http
 
 import (
 	"fmt"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/models"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/service"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/dto"
+	"github.com/CarlosMtz98/receipt-processor-challenge/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"net/http"
-	"receipt-processor-challenge/internal/domain/models"
-	"receipt-processor-challenge/internal/domain/receipt/service"
-	"receipt-processor-challenge/internal/dto"
-	"receipt-processor-challenge/pkg/utils"
 )
 
 type ReceiptHandler interface {

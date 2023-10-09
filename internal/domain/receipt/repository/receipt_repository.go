@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 	"errors"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/models"
 	"github.com/google/uuid"
-	"receipt-processor-challenge/internal/domain/models"
 	"sync"
 )
 

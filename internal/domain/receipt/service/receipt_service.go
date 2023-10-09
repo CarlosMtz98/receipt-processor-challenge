@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/models"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/repository"
 	"github.com/google/uuid"
 	"math"
-	"receipt-processor-challenge/internal/domain/models"
-	"receipt-processor-challenge/internal/domain/receipt/repository"
 	"strings"
 	"unicode"
 )

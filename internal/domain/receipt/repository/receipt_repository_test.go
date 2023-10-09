@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/models"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"receipt-processor-challenge/internal/domain/models"
 	"sync"
 	"testing"
 )

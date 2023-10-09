@@ -1,13 +1,13 @@
 package server
 
 import (
+	receiptHttp "github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/delivery/http"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/mock"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	receiptHttp "receipt-processor-challenge/internal/domain/receipt/delivery/http"
-	"receipt-processor-challenge/internal/domain/receipt/mock"
 	"testing"
 )
 

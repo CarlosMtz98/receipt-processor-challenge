@@ -1,12 +1,12 @@
 package main
 
 import (
+	receiptHttp "github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/delivery/http"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/repository"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/domain/receipt/service"
+	"github.com/CarlosMtz98/receipt-processor-challenge/internal/server"
 	"log"
 	"os"
-	receiptHttp "receipt-processor-challenge/internal/domain/receipt/delivery/http"
-	"receipt-processor-challenge/internal/domain/receipt/repository"
-	"receipt-processor-challenge/internal/domain/receipt/service"
-	"receipt-processor-challenge/internal/server"
 )
 
 func main() {
