@@ -49,6 +49,27 @@ func (r *Receipt) GetReceiptDatetime() (time.Time, error) {
 	return date, nil
 }
 
+func (r *Receipt) IsValid() (bool, error) {
+	totalPrice := 0.0
+	for i := 0; i < len(r.Items); i++ {
+		price, err := r.Items[i].GetReceiptItemPrice()
+		if err != nil {
+			return false, err
+		}
+		totalPrice += price
+	}
+
+	total, err := r.GetTotalAsFloat()
+	if err != nil {
+		return false, err
+	}
+	return total == totalPrice, nil
+}
+
 func (ri *ReceiptItem) GetPriceAsFloat() (float64, error) {
 	return strconv.ParseFloat(ri.Price, 64)
+}
+
+func (r1 *ReceiptItem) GetReceiptItemPrice() (float64, error) {
+	return strconv.ParseFloat(r1.Price, 64)
 }

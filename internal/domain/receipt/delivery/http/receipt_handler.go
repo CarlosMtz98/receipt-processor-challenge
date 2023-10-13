@@ -39,6 +39,12 @@ func (h ReceiptHandlerImpl) Create(c *gin.Context) {
 		return
 	}
 
+	isValidReceipt, err := receipt.IsValid()
+	if !isValidReceipt || err != nil {
+		utils.HandleBadRequest(c, "The receipt total must match with the items total", err)
+		return
+	}
+
 	createdReceipt, err := h.receiptSvc.CreateReceipt(c, receipt)
 	if err != nil {
 		utils.HandleInternalError(c, "Could not add new receipt", err)
