@@ -145,6 +145,6 @@ func buildRandomReceipt(isNewReceipt bool, retailer string) models.Receipt {
 		PurchaseDate: "2022-01-01",
 		PurchaseTime: "13:01",
 		Items:        mockReceiptItems,
-		Total:        "6.49",
+		Total:        "12.98",
 	}
 }
