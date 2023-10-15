@@ -48,4 +48,51 @@ func TestReceipt(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
+
+	t.Run("Valid receipt total", func(t *testing.T) {
+		receipt := Receipt{
+			ID:           uuid.New(),
+			Retailer:     "Sample Retailer",
+			PurchaseDate: "2023-10-08",
+			PurchaseTime: "13:01",
+			Items: []ReceiptItem{
+				{
+					ShortDescription: "Item 1",
+					Price:            "10.99",
+				},
+				{
+					ShortDescription: "Item 2",
+					Price:            "5.99",
+				},
+			},
+			Total: "16.98",
+		}
+
+		isValidReceipt, err := receipt.IsValid()
+		assert.NoError(t, err)
+		assert.Equal(t, true, isValidReceipt)
+	})
+
+	t.Run("Invalid recipt total, does not match with items price", func(t *testing.T) {
+		receipt := Receipt{
+			ID:           uuid.New(),
+			Retailer:     "Sample Retailer",
+			PurchaseDate: "2023-10-08",
+			PurchaseTime: "13:01",
+			Items: []ReceiptItem{
+				{
+					ShortDescription: "Item 1",
+					Price:            "10.99",
+				},
+				{
+					ShortDescription: "Item 2",
+					Price:            "5.99",
+				},
+			},
+			Total: "15.98",
+		}
+		isValidReceipt, err := receipt.IsValid()
+		assert.NoError(t, err)
+		assert.Equal(t, false, isValidReceipt)
+	})
 }
